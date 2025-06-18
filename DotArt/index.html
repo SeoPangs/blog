@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>도트 찍기</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<style>
+</style>
+<body>
+  <h1>도트 찍기</h1>
+  <div class="toolbar">
+    <label>
+      색상 선택:
+      <input type="color" id="colorPicker" value="#333333" />
+    </label>
+    <button id="saveBtn">저장</button>
+    <button id="loadBtn">불러오기</button>
+    <button id="clearBtn">초기화</button>
+    
+    <button id="savePngBtn" style="margin-left: 100px;">PNG로 저장</button>
+    <label>
+        <input type="checkbox" id="opaqueBackground" />
+         저장 시 배경 흰색
+    </label>
+  </div>
+
+  <div id="grid"></div>
+  <p style="padding-top: 0px;"> 우클릭 시 투명색으로 칠할 수 있습니다. 
+  </p>
+
+  <script src="script.js"></script>
+</body>
+</html>

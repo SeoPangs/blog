@@ -1,0 +1,41 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+.toolbar {
+  margin-bottom: 15px;
+}
+
+.cell {
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  box-sizing: border-box;
+  border: 2px solid #ddd; /* 기본 회색 테두리 */
+  background-color: transparent;
+}
+
+/* 외곽선
+.border-top { border-top: 1px solid #383838; }
+.border-bottom { border-bottom: 1px solid #383838; }
+.border-left { border-left: 1px solid #383838; }
+.border-right { border-right: 1px solid #383838; }
+*/
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(64, 10px);
+  grid-template-rows: repeat(64, 10px);
+  justify-content: center;
+  margin: 0 auto;
+}

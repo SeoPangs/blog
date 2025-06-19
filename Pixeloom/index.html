@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixeloom - 도트 찍기</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<style>
+</style>
+<body>
+  <h1>Pixeloom - 도트 찍기</h1>
+  <div class="toolbar">
+    <label>
+      색상 선택:
+      <input type="color" id="colorPicker" value="#333333" />
+    </label>
+    <button id="saveBtn" title="현재 작업을 저장합니다 : Ctrl + S 로도 저장할 수 있습니다.">저장</button>
+    <button id="loadBtn" title="마지막 저장한 작업으로 불러옵니다.">불러오기</button>
+    <button id="clearBtn" title="저장한 작업과 현재 캔버스를 초기화합니다.">초기화</button>
+    <label style="display: none"><input type="checkbox" id="fillMode" > 채우기 모드</label>
+    
+    <button id="savePngBtn" style="margin-left: 100px;" title="현재 캔버스를 PNG 파일로 다운로드합니다.">PNG로 저장</button>
+    <label>
+        <input type="checkbox" id="opaqueBackground" />
+         저장 시 배경 흰색
+    </label>
+  </div>
+
+  <div id="grid"></div>
+  <p style="padding-top: 0px;"> 
+    우클릭 시 투명색으로 칠할 수 있습니다. <br>
+    마우스 휠 버튼을 클릭 시 주변 같은 색의 영역을 칠할 수 있습니다.<br>
+    Ctrl + Z 를 통해 그리기 명령을 취소할 수 있습니다.
+  </p>
+
+  <script src="script.js"></script>
+</body>
+</html>

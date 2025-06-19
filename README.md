@@ -1,4 +1,5 @@
 # blog
 Unknowable things that originate from me.
 
-## Dot Art
+## Pixeloom
+Weave your world, one pixel at a time.

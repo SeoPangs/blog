@@ -4,11 +4,13 @@ const saveBtn = document.getElementById('saveBtn');
 const savePngBtn = document.getElementById('savePngBtn');
 const clearBtn = document.getElementById('clearBtn');
 const loadBtn = document.getElementById('loadBtn');
+const fillModeCheckbox = document.getElementById('fillMode');
 
 const GRID_SIZE = 64;
 let cells = [];
 let isDrawing = false;
 let isErasing = false;
+let undoStack = [];
 
 function setCellColor(cell, color) {
   if (color === 'transparent') {
@@ -18,14 +20,44 @@ function setCellColor(cell, color) {
     cell.style.backgroundColor = color;
     cell.style.border = 'none'; // 색을 칠하면 테두리 제거
   }
+} 
+
+function snapshotGrid() {
+  const data = cells.map(cell => cell.style.backgroundColor || '');
+  undoStack.push(data);
+  if (undoStack.length > 100) undoStack.shift(); // 최대 100개까지만 저장
 }
 
-function handleDraw(cell, erase = false) {
-  if (erase) {
-    setCellColor(cell, 'transparent');
+function undoGrid() {
+  if (undoStack.length === 0) {
+    console.log("empty log.");
+    return;
+  }
+  const previous = undoStack.pop();
+  previous.forEach((color, i) => {
+    cells[i].style.backgroundColor = color;
+    cells[i].style.border = (!color || color === 'transparent' || color === 'rgba(0, 0, 0, 0)')
+      ? '2px solid #ddd'
+      : 'none';
+  });
+}
+
+function handleDraw(cell, erase = false, forceFill = false) {
+  if (!cell || !cell.classList.contains('cell')) return;
+
+  const selectedColor = colorPicker.value.toLowerCase();
+
+  if ((fillModeCheckbox.checked || forceFill) && !erase) {
+    const targetColor = window.getComputedStyle(cell).backgroundColor;
+    if (rgbToHex(targetColor) !== rgbToHex(selectedColor)) {
+      floodFill(cell, targetColor, selectedColor);
+    }
   } else {
-    const selectedColor = colorPicker.value.toLowerCase();
-    setCellColor(cell, selectedColor);
+    if (erase) {
+      setCellColor(cell, 'transparent');
+    } else {
+      setCellColor(cell, selectedColor);
+    }
   }
 }
 
@@ -46,9 +78,15 @@ function createGrid() {
       // 마우스 클릭
       cell.addEventListener('mousedown', (e) => {
         e.preventDefault();
+        snapshotGrid();
         isDrawing = true;
-        isErasing = e.button === 2; // 우클릭이면 지우기
-        handleDraw(cell, isErasing);
+        if (e.button === 1) {
+          isErasing = false;
+          handleDraw(cell, false, true); // 가운데 클릭은 무조건 채우기
+        } else {
+          isErasing = (e.button === 2);
+          handleDraw(cell, isErasing);
+        }
       });
 
       // 마우스 드래그
@@ -101,7 +139,7 @@ function saveGridAsPNG() {
   });
 
   const link = document.createElement('a');
-  link.download = 'dot-art.png';
+  link.download = 'Passion with Pixeloom.png';
   link.href = canvas.toDataURL();
   link.click();
 }
@@ -153,6 +191,42 @@ function rgbToHex(rgb) {
   );
 }
 
+function floodFill(startCell, targetColor, newColor) {
+  const index = parseInt(startCell.dataset.index);
+  const visited = new Set();
+  const queue = [index];
+
+  while (queue.length > 0) {
+    const i = queue.shift();
+    if (visited.has(i)) continue;
+    visited.add(i);
+
+    const cell = cells[i];
+    const color = window.getComputedStyle(cell).backgroundColor;
+    if (rgbToHex(color) !== rgbToHex(targetColor)) continue;
+
+    setCellColor(cell, newColor);
+
+    const neighbors = getNeighborIndices(i);
+    queue.push(...neighbors);
+  }
+}
+
+function getNeighborIndices(index) {
+  const neighbors = [];
+  const row = Math.floor(index / GRID_SIZE);
+  const col = index % GRID_SIZE;
+
+  if (row > 0) neighbors.push(index - GRID_SIZE); // 위
+  if (row < GRID_SIZE - 1) neighbors.push(index + GRID_SIZE); // 아래
+  if (col > 0) neighbors.push(index - 1); // 왼쪽
+  if (col < GRID_SIZE - 1) neighbors.push(index + 1); // 오른쪽
+
+  return neighbors;
+}
+
+
+
 // 초기 실행
 createGrid();
 loadGrid();
@@ -160,3 +234,14 @@ saveBtn.addEventListener('click', saveGrid);
 savePngBtn.addEventListener('click', saveGridAsPNG);
 clearBtn.addEventListener('click', clearGrid);
 loadBtn.addEventListener('click', loadGrid);
+
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'z') {
+    undoGrid();
+  }
+
+  if (e.ctrlKey && e.key.toLowerCase() === 's') {
+    e.preventDefault(); // 브라우저 기본 저장 방지
+    saveGrid();         // 사용자 정의 저장 함수 실행
+  }
+});

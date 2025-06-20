@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR 코드 생성기</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>QR 코드 생성기</h1>
+  <input type="text" id="text" placeholder="문자열을 입력하세요" />
+  <label>
+    <input type="checkbox" id="marginCheckbox" checked />
+    여백 포함
+  </label>
+  <button id="generateBtn">QR 코드 생성</button>
+  <div id="qrcodeWrapper">
+    <div id="qrcode"></div>
+  </div>
+  <button id="downloadBtn" style="display: none;">QR 이미지 다운로드</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
